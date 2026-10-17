@@ -7,8 +7,6 @@ A public, **sanitized snapshot** of my [Pi coding agent](https://pi.dev/) setup 
 | Area | Configuration |
 | --- | --- |
 | Pi | Installed version **1.3.0** when exported |
-| Default model | `openai-codex/gpt-6-luna`, **high** thinking |
-| Model overrides | Seven `openai-codex` models (`gpt-5.6-luna/sol/terra`, `gpt-6-astra/luna/sol`, `gpt-6.1-sol`) use a 1,050,000-token context window and 128,000 max output tokens; see [`agent/models.json`](agent/models.json). Availability still depends on the provider/account. |
 | Packages | 9 npm + 2 git sources declared in [`agent/settings.json`](agent/settings.json) |
 | Local extensions | [`memory`](extensions/memory/README.md) and [`workflow`](extensions/workflow/DEPLOYMENT.md) |
 | Skills | `tsk-cli` included; six other installed skills catalogued below without copied upstream files |

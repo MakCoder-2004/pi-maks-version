@@ -50,8 +50,6 @@ The package declarations are unpinned in `settings.json`; the accompanying npm l
 | `frontend-design` | [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills/frontend-design): visual design guidance (matching upstream identified by its contents; not in the local skill lockfile). |
 | `ui-ux-pro-max` | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill): searchable UI/UX design guidance (matching upstream identified by its description; not in the local skill lockfile). |
 
-Three empty directories (`clean-code-guard`, `docs-guard`, `test-guard`) contained no `SKILL.md` or files, so they are not included or counted as working skills. The `frontend-design` and `ui-ux-pro-max` sources were identified after export from matching content/descriptions; their original installation revisions are unknown. Review each upstream before installing.
-
 ## Clone this Pi setup (Windows / PowerShell)
 
 Install [Pi](https://pi.dev/) (this snapshot used **1.3.0**), Git, Node.js/npm and, if you want Herdr subagents, [Herdr](https://github.com/modem-dev/herdr). Run the following in **PowerShell**, not Git Bash, on a fresh profile. **Read the repository and upstream skill/package code before installing**: Pi extensions and skills can execute code or direct an agent to do so. If you already have a Pi setup, back up `~/.pi/agent` and `~/.agents/skills` first; the config copies below overwrite matching files.

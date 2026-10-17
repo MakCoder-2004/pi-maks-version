@@ -60,19 +60,58 @@ The package declarations are unpinned in `settings.json`; the accompanying npm l
 | `code-review` | [mattpocock/skills](https://github.com/mattpocock/skills), `skills/engineering/code-review`: two-axis standards/spec review. |
 | `find-skills` | [vercel-labs/skills](https://github.com/vercel-labs/skills), `skills/find-skills`: discover installable skills. |
 | `skill-creator` | [anthropics/skills](https://github.com/anthropics/skills), `skills/skill-creator`: create and evaluate skills. |
-| `frontend-design` | Installed locally: visual design guidance; upstream provenance was not recorded in the skill lockfile. |
-| `ui-ux-pro-max` | Installed locally: searchable UI/UX design data and implementation guidelines; upstream provenance was not recorded in the skill lockfile. |
+| `frontend-design` | [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills/frontend-design): visual design guidance (matching upstream identified by its contents; not in the local skill lockfile). |
+| `ui-ux-pro-max` | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill): searchable UI/UX design guidance (matching upstream identified by its description; not in the local skill lockfile). |
 
-Three empty directories (`clean-code-guard`, `docs-guard`, `test-guard`) contained no `SKILL.md` or files, so they are not included or counted as working skills. Skills with documented upstream sources can be installed using the upstream instructions or `npx skills add <owner/repo@skill> -g -y`. For the two without recorded provenance, supply your own trusted copies after checking their origin and license.
+Three empty directories (`clean-code-guard`, `docs-guard`, `test-guard`) contained no `SKILL.md` or files, so they are not included or counted as working skills. The `frontend-design` and `ui-ux-pro-max` sources were identified after export from matching content/descriptions; their original installation revisions are unknown. Review each upstream before installing.
 
-## Restore (Windows)
+## Clone this Pi setup (Windows / PowerShell)
 
-1. Install [Pi](https://pi.dev/), Node.js/npm, and (for Herdr integration) [Herdr](https://github.com/modem-dev/herdr). **Review the code and third-party sources before loading extensions or skills.**
-2. Copy `agent/settings.json`, `agent/models.json`, `agent/keybindings.json`, and `agent/pi-plan-mode.jsonc` into `%USERPROFILE%\.pi\agent\`. These are sanitized: the original machine `deviceId` was removed. If your Pi version requires it, Pi will regenerate local state. Adjust the default model/provider for your own account.
-3. Copy `extensions/memory` and `extensions/workflow` into `%USERPROFILE%\.pi\agent\extensions\`. In a shell with npm, run `npm ci --omit=dev --prefix "$HOME/.pi/agent/extensions/workflow"` to install the workflow extension's pinned `yaml` dependency. Do not copy `node_modules` from this repository.
-4. Copy `skills/tsk-cli` into `%USERPROFILE%\.agents\skills\`. Reinstall the referenced third-party skills from their maintainers if wanted. The original skill-lock metadata was not exported because it also contains unrelated agent selections and machine-local install records.
-5. Let Pi reconcile the packages listed in `settings.json` (`pi update --extensions`), or install each declared source with `pi install <source>`. The npm lockfile under `package-manifest/` is a record of installed versions, **not** a Pi configuration file. Reauthenticate providers and any services privately; do not put keys into this repository.
-6. Start `pi`, inspect loaded resources and warnings, and use `/reload` after subsequent config edits. The workflow extension's [`DEPLOYMENT.md`](extensions/workflow/DEPLOYMENT.md) lists its optional release checks. Its operator-owned `~/.pi/SPECS.md` and `~/.pi/workflows/pipeline.yaml` were **not present** at export time; [`pipeline.example.yaml`](extensions/workflow/pipeline.example.yaml) is only an example, not an active workflow. The historical `AUDIT.md` was omitted because it described a different machine and referred to unexported private paths.
+Install [Pi](https://pi.dev/) (this snapshot used **1.3.0**), Git, Node.js/npm and, if you want Herdr subagents, [Herdr](https://github.com/modem-dev/herdr). Run the following in **PowerShell**, not Git Bash, on a fresh profile. **Read the repository and upstream skill/package code before installing**: Pi extensions and skills can execute code or direct an agent to do so. If you already have a Pi setup, back up `~/.pi/agent` and `~/.agents/skills` first; the config copies below overwrite matching files.
+
+```powershell
+git clone https://github.com/MakCoder-2004/maks-pi-version.git "$HOME\maks-pi-version"
+$repo = Join-Path $HOME 'maks-pi-version'
+$agent = Join-Path $HOME '.pi\agent'
+$skills = Join-Path $HOME '.agents\skills'
+New-Item -ItemType Directory -Force $agent, (Join-Path $agent 'extensions'), $skills | Out-Null
+
+# Pi settings, model overrides, keybindings and plan-mode shortcut.
+'settings.json', 'models.json', 'keybindings.json', 'pi-plan-mode.jsonc' | ForEach-Object {
+    Copy-Item (Join-Path $repo "agent\$_") -Destination $agent -Force
+}
+
+# Locally maintained extensions and skill.
+'memory', 'workflow' | ForEach-Object {
+    Copy-Item (Join-Path $repo "extensions\$_") -Destination (Join-Path $agent 'extensions') -Recurse -Force
+}
+Copy-Item (Join-Path $repo 'skills\tsk-cli') -Destination $skills -Recurse -Force
+npm ci --omit=dev --prefix (Join-Path $agent 'extensions\workflow')
+
+# Install all 11 declared Pi packages (9 npm, 2 git) from settings.json.
+pi update --extensions
+
+# Install all six referenced third-party skills globally for Pi only.
+npx --yes skills add timschoch/skilly -g -a pi -s babysit-pr -y
+npx --yes skills add mattpocock/skills -g -a pi -s code-review -y
+npx --yes skills add vercel-labs/skills -g -a pi -s find-skills -y
+npx --yes skills add anthropics/skills -g -a pi -s skill-creator -y
+npx --yes skills add anthropics/skills -g -a pi -s frontend-design -y
+npx --yes skills add nextlevelbuilder/ui-ux-pro-max-skill -g -a pi -s ui-ux-pro-max -y
+
+# Verify package/skill discovery, then launch and sign in to your own provider.
+pi list
+npx --yes skills list -g -a pi
+pi
+```
+
+**Result:** four personal config files, two custom extensions, the `tsk-cli` skill, 11 Pi packages, and six upstream skills. Pi discovers `~/.agents/skills` automatically. `tsk-cli` also needs the separate [tsk CLI](https://gettsk.sh/docs/install.md). The UI/UX skill's search scripts may need Python 3. The original two Git checkouts were unpinned; the package commands install their current upstream versions, not necessarily the commits listed above. Likewise upstream skills may have changed since this snapshot.
+
+## Restore notes
+
+The settings are sanitized (the machine `deviceId` was removed). Change the default model/provider if your account lacks it, then authenticate privately in Pi. No API credentials, sessions or memory can be restored from this public repository. The npm lockfile in `package-manifest/` records installed dependencies but is **not** a Pi config file; the workflow extension's own `package-lock.json` is used by `npm ci`. Do not copy `node_modules` into Git.
+
+Start `pi` and check startup warnings and the loaded resource list; use `/reload` after later config changes. The workflow extension's [`DEPLOYMENT.md`](extensions/workflow/DEPLOYMENT.md) lists optional release checks. Its operator-owned `~/.pi/SPECS.md` and `~/.pi/workflows/pipeline.yaml` were **not present** at export time; [`pipeline.example.yaml`](extensions/workflow/pipeline.example.yaml) is only an example, not an active workflow. The historical `AUDIT.md` was omitted because it described a different machine and referred to unexported private paths. The original skill-lock metadata was omitted because it included unrelated agent selections and machine-local installation records.
 
 The exported workflow tests were adjusted to use a local example and temporary fixtures instead of private operator files. On Windows with Bun 1.4.2: **40 pass, 3 skipped, 0 fail**; three child-process error-path cases are skipped because their fixture does not reliably deliver pipe/close events to Bun on Windows. Run `bun test extensions/workflow/tests` after installing `yaml` and making the Pi runtime packages resolvable to Bun.
 

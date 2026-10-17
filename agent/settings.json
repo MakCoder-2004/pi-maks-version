@@ -1,0 +1,30 @@
+{
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-6-luna",
+  "defaultThinkingLevel": "high",
+  "packages": [
+    "npm:@juicesharp/rpiv-btw",
+    "npm:pi-mcp-adapter",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@juicesharp/rpiv-todo",
+    "npm:pi-goal-x",
+    "npm:@baylarsadigov/omp-undo-redo",
+    "npm:pi-web-access",
+    "npm:pi-powerline-footer",
+    "git:github.com/modem-dev/pi-herdr-subagents",
+    "npm:@milanglacier/pi-plan-mode",
+    "git:github.com/penniey/pi-paste-image"
+  ],
+  "powerline": {
+    "preset": "default",
+    "model": {
+      "display": "qualified"
+    },
+    "context": {
+      "format": "full"
+    }
+  },
+  "extensions": [
+    "-builtin:mcp"
+  ]
+}

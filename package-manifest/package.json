@@ -1,0 +1,15 @@
+{
+  "name": "pi-extensions",
+  "private": true,
+  "dependencies": {
+    "@baylarsadigov/omp-undo-redo": "^1.7.0",
+    "@juicesharp/rpiv-ask-user-question": "^2.13.9",
+    "@juicesharp/rpiv-btw": "^2.13.9",
+    "@juicesharp/rpiv-todo": "^2.13.9",
+    "@milanglacier/pi-plan-mode": "^0.7.2",
+    "pi-goal-x": "^0.32.3",
+    "pi-mcp-adapter": "^5.3.2",
+    "pi-powerline-footer": "^0.20.2",
+    "pi-web-access": "^0.42.0"
+  }
+}

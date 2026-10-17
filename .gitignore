@@ -1,0 +1,24 @@
+# Never commit credentials, conversations, memory, caches or machine-local state.
+**/auth.json
+**/mcp-auth.json
+**/mcp.json
+**/sessions/
+/memory/
+**/backups/
+**/web-search-cache/
+**/models-store.json
+**/mcp-onboarding.json
+**/install/
+**/bin/
+**/node_modules/
+**/.env
+**/.env.*
+**/*.log
+**/*.log.*
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/credentials*
+**/secrets*
+**/.DS_Store

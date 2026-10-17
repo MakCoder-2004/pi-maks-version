@@ -55,8 +55,8 @@ The package declarations are unpinned in `settings.json`; the accompanying npm l
 Install [Pi](https://pi.dev/) (this snapshot used **1.3.0**), Git, Node.js/npm and, if you want Herdr subagents, [Herdr](https://github.com/modem-dev/herdr). Run the following in **PowerShell**, not Git Bash, on a fresh profile. **Read the repository and upstream skill/package code before installing**: Pi extensions and skills can execute code or direct an agent to do so. If you already have a Pi setup, back up `~/.pi/agent` and `~/.agents/skills` first; the config copies below overwrite matching files.
 
 ```powershell
-git clone https://github.com/MakCoder-2004/maks-pi-version.git "$HOME\maks-pi-version"
-$repo = Join-Path $HOME 'maks-pi-version'
+git clone https://github.com/MakCoder-2004/pi-maks-version.git "$HOME\pi-maks-version"
+$repo = Join-Path $HOME 'pi-maks-version'
 $agent = Join-Path $HOME '.pi\agent'
 $skills = Join-Path $HOME '.agents\skills'
 New-Item -ItemType Directory -Force $agent, (Join-Path $agent 'extensions'), $skills | Out-Null

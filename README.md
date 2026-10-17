@@ -2,17 +2,6 @@
 
 A public, **sanitized snapshot** of my [Pi coding agent](https://pi.dev/) setup on Windows. It contains the settings, model overrides, keybindings, locally maintained extensions, and one locally maintained skill. Third-party packages and skills are **referenced, not vendored**. No credentials, chat history, or personal memory are published.
 
-## At a glance
-
-| Area | Configuration |
-| --- | --- |
-| Pi | Installed version **1.3.0** when exported |
-| Packages | 9 npm + 2 git sources declared in [`agent/settings.json`](agent/settings.json) |
-| Local extensions | [`memory`](extensions/memory/README.md) and [`workflow`](extensions/workflow/DEPLOYMENT.md) |
-| Skills | `tsk-cli` included; six other installed skills catalogued below without copied upstream files |
-| Keybindings | Image paste binding cleared; plan-mode toggle `Ctrl+Alt+P` |
-| MCP | `pi-mcp-adapter` installed; Pi's built-in MCP extension disabled. No user `mcp.json` was present in this snapshot. |
-
 ## Files
 
 ```text

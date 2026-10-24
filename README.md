@@ -33,10 +33,10 @@ package-manifest/
 | [`pi-web-access`](https://www.npmjs.com/package/pi-web-access) | Web research/access tools |
 | [`pi-powerline-footer`](https://www.npmjs.com/package/pi-powerline-footer) | Footer/status line; default preset, qualified model and full context display |
 | [`@milanglacier/pi-plan-mode`](https://www.npmjs.com/package/@milanglacier/pi-plan-mode) | Plan mode |
-| [`modem-dev/pi-herdr-subagents`](https://github.com/modem-dev/pi-herdr-subagents) | Herdr subagents (local checkout at `b698732` when exported) |
+| [`modem-dev/pi-herdr-subagents`](https://github.com/modem-dev/pi-herdr-subagents) | Herdr subagents (local checkout at `2489019`, plus uncommitted local Windows fixes; see note below) |
 | [`penniey/pi-paste-image`](https://github.com/penniey/pi-paste-image) | Image paste (local checkout at `3b332d6` when exported) |
 
-The package declarations are unpinned in `settings.json`; the accompanying npm lockfile records the installed npm dependency snapshot. Git commit IDs above document the observed local checkouts, **not** pins in settings.
+The package declarations are unpinned in `settings.json`; the accompanying npm lockfile records the installed npm dependency snapshot. Git commit IDs above document the observed local checkouts, **not** pins in settings. The Herdr checkout has additional uncommitted Windows fixes (Git Bash launch and automatic pane cleanup) that this public snapshot does **not** include. A fresh install from Git will not have those fixes until they are published upstream.
 
 ### Skills
 
@@ -44,7 +44,6 @@ The package declarations are unpinned in `settings.json`; the accompanying npm l
 | --- | --- |
 | [`tsk-cli`](skills/tsk-cli/SKILL.md) | Included locally maintained skill: operate and refine the `tsk` task board via CLI; requires [tsk](https://gettsk.sh/docs/install.md). |
 | `babysit-pr` | [timschoch/skilly](https://github.com/timschoch/skilly), `bundles/workflow/skills/babysit-pr`: watch PR CI and review threads. |
-| `code-review` | [mattpocock/skills](https://github.com/mattpocock/skills), `skills/engineering/code-review`: two-axis standards/spec review. |
 | `find-skills` | [vercel-labs/skills](https://github.com/vercel-labs/skills), `skills/find-skills`: discover installable skills. |
 | `skill-creator` | [anthropics/skills](https://github.com/anthropics/skills), `skills/skill-creator`: create and evaluate skills. |
 | `frontend-design` | [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills/frontend-design): visual design guidance (matching upstream identified by its contents; not in the local skill lockfile). |
@@ -52,7 +51,7 @@ The package declarations are unpinned in `settings.json`; the accompanying npm l
 
 ## Clone this Pi setup (Windows / PowerShell)
 
-Install [Pi](https://pi.dev/) (this snapshot used **1.3.0**), Git, Node.js/npm and, if you want Herdr subagents, [Herdr](https://github.com/modem-dev/herdr). Run the following in **PowerShell**, not Git Bash, on a fresh profile. **Read the repository and upstream skill/package code before installing**: Pi extensions and skills can execute code or direct an agent to do so. If you already have a Pi setup, back up `~/.pi/agent` and `~/.agents/skills` first; the config copies below overwrite matching files.
+Install [Pi](https://pi.dev/) (this snapshot used **1.4.0**), Git, Node.js/npm and, if you want Herdr subagents, [Herdr](https://github.com/modem-dev/herdr). Run the following in **PowerShell**, not Git Bash, on a fresh profile. **Read the repository and upstream skill/package code before installing**: Pi extensions and skills can execute code or direct an agent to do so. If you already have a Pi setup, back up `~/.pi/agent` and `~/.agents/skills` first; the config copies below overwrite matching files.
 
 ```powershell
 git clone https://github.com/MakCoder-2004/pi-maks-version.git "$HOME\pi-maks-version"
@@ -76,9 +75,8 @@ npm ci --omit=dev --prefix (Join-Path $agent 'extensions\workflow')
 # Install all 11 declared Pi packages (9 npm, 2 git) from settings.json.
 pi update --extensions
 
-# Install all six referenced third-party skills globally for Pi only.
+# Install all five referenced third-party skills globally for Pi only.
 npx --yes skills add timschoch/skilly -g -a pi -s babysit-pr -y
-npx --yes skills add mattpocock/skills -g -a pi -s code-review -y
 npx --yes skills add vercel-labs/skills -g -a pi -s find-skills -y
 npx --yes skills add anthropics/skills -g -a pi -s skill-creator -y
 npx --yes skills add anthropics/skills -g -a pi -s frontend-design -y
@@ -90,7 +88,7 @@ npx --yes skills list -g -a pi
 pi
 ```
 
-**Result:** four personal config files, two custom extensions, the `tsk-cli` skill, 11 Pi packages, and six upstream skills. Pi discovers `~/.agents/skills` automatically. `tsk-cli` also needs the separate [tsk CLI](https://gettsk.sh/docs/install.md). The UI/UX skill's search scripts may need Python 3. The original two Git checkouts were unpinned; the package commands install their current upstream versions, not necessarily the commits listed above. Likewise upstream skills may have changed since this snapshot.
+**Result:** four personal config files, two custom extensions, the `tsk-cli` skill, 11 Pi packages, and five upstream skills. Pi discovers `~/.agents/skills` automatically. `tsk-cli` also needs the separate [tsk CLI](https://gettsk.sh/docs/install.md). The UI/UX skill's search scripts may need Python 3. The original two Git checkouts were unpinned; the package commands install their current upstream versions, not necessarily the commits listed above. Likewise upstream skills may have changed since this snapshot.
 
 ## Restore notes
 
@@ -102,4 +100,4 @@ The exported workflow tests were adjusted to use a local example and temporary f
 
 ## Privacy and limits
 
-This is **not** a byte-for-byte backup of the agent directory. Deliberately excluded: `auth.json` and any OAuth/API tokens, sessions/transcripts, user/global/project memory contents, caches, machine IDs, downloaded Pi runtime/binaries, generated `node_modules`, and third-party package/skill source. There were no user `mcp.json`, prompt templates, or themes to export. The repository's [`.gitignore`](.gitignore) blocks common private/runtime paths, but review every future commit before making it public. Third-party components remain governed by their upstream licenses.
+This is **not** a byte-for-byte backup of the agent directory. Deliberately excluded: `auth.json` and any OAuth/API tokens, sessions/transcripts, user/global/project memory contents, caches, machine IDs, downloaded Pi runtime/binaries, generated `node_modules`, and third-party package/skill source. A user MCP configuration exists but is intentionally excluded; there are no prompt templates or themes in this snapshot. The repository's [`.gitignore`](.gitignore) blocks common private/runtime paths, but review every future commit before making it public. Third-party components remain governed by their upstream licenses.

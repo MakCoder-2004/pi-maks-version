@@ -2,14 +2,14 @@
   "name": "pi-extensions",
   "private": true,
   "dependencies": {
-    "@baylarsadigov/omp-undo-redo": "^1.7.0",
-    "@juicesharp/rpiv-ask-user-question": "^2.13.9",
-    "@juicesharp/rpiv-btw": "^2.13.9",
-    "@juicesharp/rpiv-todo": "^2.13.9",
-    "@milanglacier/pi-plan-mode": "^0.7.2",
-    "pi-goal-x": "^0.32.3",
-    "pi-mcp-adapter": "^5.3.2",
-    "pi-powerline-footer": "^0.20.2",
-    "pi-web-access": "^0.42.0"
+    "@baylarsadigov/omp-undo-redo": "^1.8.0",
+    "@juicesharp/rpiv-ask-user-question": "^2.15.0",
+    "@juicesharp/rpiv-btw": "^2.15.0",
+    "@juicesharp/rpiv-todo": "^2.15.0",
+    "@milanglacier/pi-plan-mode": "^0.8.0",
+    "pi-goal-x": "^0.34.0",
+    "pi-mcp-adapter": "^6.0.0",
+    "pi-powerline-footer": "^0.21.0",
+    "pi-web-access": "^0.44.0"
   }
 }

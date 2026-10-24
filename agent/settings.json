@@ -11,7 +11,7 @@
     "npm:@baylarsadigov/omp-undo-redo",
     "npm:pi-web-access",
     "npm:pi-powerline-footer",
-    "git:github.com/modem-dev/pi-herdr-subagents",
+    "./packages/herdr-subagents",
     "npm:@milanglacier/pi-plan-mode",
     "git:github.com/penniey/pi-paste-image"
   ],

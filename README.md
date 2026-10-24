@@ -1,6 +1,6 @@
 # Maks' Pi setup
 
-A public, **sanitized snapshot** of my [Pi coding agent](https://pi.dev/) setup on Windows. It contains the settings, model overrides, keybindings, locally maintained extensions, and one locally maintained skill. Third-party packages and skills are **referenced, not vendored**. No credentials, chat history, or personal memory are published.
+A public, **sanitized snapshot** of my [Pi coding agent](https://pi.dev/) setup on Windows. It contains the settings, model overrides, keybindings, locally maintained extensions, a patched Herdr subagent extension, and one locally maintained skill. Other third-party packages and skills are **referenced, not vendored**. No credentials, chat history, or personal memory are published.
 
 ## Files
 
@@ -13,6 +13,7 @@ agent/
 extensions/
   memory/                 # persistent user/global/project memory tooling (code only)
   workflow/               # multi-phase workflow runner, tests and example YAML
+  herdr-subagents/        # patched upstream Herdr subagent package and tests
 skills/
   tsk-cli/SKILL.md        # locally maintained instructions for the tsk task board
 package-manifest/
@@ -33,10 +34,10 @@ package-manifest/
 | [`pi-web-access`](https://www.npmjs.com/package/pi-web-access) | Web research/access tools |
 | [`pi-powerline-footer`](https://www.npmjs.com/package/pi-powerline-footer) | Footer/status line; default preset, qualified model and full context display |
 | [`@milanglacier/pi-plan-mode`](https://www.npmjs.com/package/@milanglacier/pi-plan-mode) | Plan mode |
-| [`modem-dev/pi-herdr-subagents`](https://github.com/modem-dev/pi-herdr-subagents) | Herdr subagents (local checkout at `2489019`, plus uncommitted local Windows fixes; see note below) |
+| [`modem-dev/pi-herdr-subagents`](https://github.com/modem-dev/pi-herdr-subagents) | Locally vendored at [`extensions/herdr-subagents`](extensions/herdr-subagents/README.md), based on `2489019` with Windows launch and pane cleanup fixes |
 | [`penniey/pi-paste-image`](https://github.com/penniey/pi-paste-image) | Image paste (local checkout at `3b332d6` when exported) |
 
-The package declarations are unpinned in `settings.json`; the accompanying npm lockfile records the installed npm dependency snapshot. Git commit IDs above document the observed local checkouts, **not** pins in settings. The Herdr checkout has additional uncommitted Windows fixes (Git Bash launch and automatic pane cleanup) that this public snapshot does **not** include. A fresh install from Git will not have those fixes until they are published upstream.
+Npm and Git package declarations are unpinned in `settings.json`; the accompanying npm lockfile records the installed npm dependency snapshot. The Herdr package is different: its patched source is included here and settings point to a local copy, so a fresh install retains these fixes. The remaining Git commit ID documents the observed local checkout, **not** a pin in settings. Herdr is based on upstream MIT-licensed source with attribution retained in its README.
 
 ### Skills
 
@@ -58,7 +59,7 @@ git clone https://github.com/MakCoder-2004/pi-maks-version.git "$HOME\pi-maks-ve
 $repo = Join-Path $HOME 'pi-maks-version'
 $agent = Join-Path $HOME '.pi\agent'
 $skills = Join-Path $HOME '.agents\skills'
-New-Item -ItemType Directory -Force $agent, (Join-Path $agent 'extensions'), $skills | Out-Null
+New-Item -ItemType Directory -Force $agent, (Join-Path $agent 'extensions'), (Join-Path $agent 'packages'), $skills | Out-Null
 
 # Pi settings, model overrides, keybindings and plan-mode shortcut.
 'settings.json', 'models.json', 'keybindings.json', 'pi-plan-mode.jsonc' | ForEach-Object {
@@ -70,10 +71,15 @@ New-Item -ItemType Directory -Force $agent, (Join-Path $agent 'extensions'), $sk
     Copy-Item (Join-Path $repo "extensions\$_") -Destination (Join-Path $agent 'extensions') -Recurse -Force
 }
 Copy-Item (Join-Path $repo 'skills\tsk-cli') -Destination $skills -Recurse -Force
+Copy-Item (Join-Path $repo 'extensions\herdr-subagents') -Destination (Join-Path $agent 'packages') -Recurse -Force
 npm ci --omit=dev --prefix (Join-Path $agent 'extensions\workflow')
 
-# Install all 11 declared Pi packages (9 npm, 2 git) from settings.json.
+# Install the 9 npm and 1 Git package; the local Herdr package was copied above.
 pi update --extensions
+
+# Optional: start Herdr in another terminal, then link its included dispatcher.
+# (Skip this command if you do not use Herdr.)
+herdr plugin link (Join-Path $agent 'packages\herdr-subagents\herdr-plugin')
 
 # Install all five referenced third-party skills globally for Pi only.
 npx --yes skills add timschoch/skilly -g -a pi -s babysit-pr -y
@@ -88,16 +94,16 @@ npx --yes skills list -g -a pi
 pi
 ```
 
-**Result:** four personal config files, two custom extensions, the `tsk-cli` skill, 11 Pi packages, and five upstream skills. Pi discovers `~/.agents/skills` automatically. `tsk-cli` also needs the separate [tsk CLI](https://gettsk.sh/docs/install.md). The UI/UX skill's search scripts may need Python 3. The original two Git checkouts were unpinned; the package commands install their current upstream versions, not necessarily the commits listed above. Likewise upstream skills may have changed since this snapshot.
+**Result:** four personal config files, two custom extensions, one patched local Herdr package, the `tsk-cli` skill, 11 Pi packages (9 npm, 1 Git, 1 local), and five upstream skills. Pi discovers `~/.agents/skills` automatically. `tsk-cli` also needs the separate [tsk CLI](https://gettsk.sh/docs/install.md). The UI/UX skill's search scripts may need Python 3. The remaining Git checkout is unpinned, so the package command installs its current upstream version, not necessarily the commit listed above. Likewise upstream skills may have changed since this snapshot.
 
 ## Restore notes
 
 The settings are sanitized (the machine `deviceId` was removed). Change the default model/provider if your account lacks it, then authenticate privately in Pi. No API credentials, sessions or memory can be restored from this public repository. The npm lockfile in `package-manifest/` records installed dependencies but is **not** a Pi config file; the workflow extension's own `package-lock.json` is used by `npm ci`. Do not copy `node_modules` into Git.
 
-Start `pi` and check startup warnings and the loaded resource list; use `/reload` after later config changes. The workflow extension's [`DEPLOYMENT.md`](extensions/workflow/DEPLOYMENT.md) lists optional release checks. Its operator-owned `~/.pi/SPECS.md` and `~/.pi/workflows/pipeline.yaml` were **not present** at export time; [`pipeline.example.yaml`](extensions/workflow/pipeline.example.yaml) is only an example, not an active workflow. The historical `AUDIT.md` was omitted because it described a different machine and referred to unexported private paths. The original skill-lock metadata was omitted because it included unrelated agent selections and machine-local installation records.
+Start `pi` and check startup warnings and the loaded resource list; use `/reload` after later config changes. To use subagents, run `pi` inside a Herdr-managed pane after linking the included plugin; running Pi outside Herdr only offers setup hints. The workflow extension's [`DEPLOYMENT.md`](extensions/workflow/DEPLOYMENT.md) lists optional release checks. Its operator-owned `~/.pi/SPECS.md` and `~/.pi/workflows/pipeline.yaml` were **not present** at export time; [`pipeline.example.yaml`](extensions/workflow/pipeline.example.yaml) is only an example, not an active workflow. The historical `AUDIT.md` was omitted because it described a different machine and referred to unexported private paths. The original skill-lock metadata was omitted because it included unrelated agent selections and machine-local installation records.
 
 The exported workflow tests were adjusted to use a local example and temporary fixtures instead of private operator files. On Windows with Bun 1.4.2: **40 pass, 3 skipped, 0 fail**; three child-process error-path cases are skipped because their fixture does not reliably deliver pipe/close events to Bun on Windows. Run `bun test extensions/workflow/tests` after installing `yaml` and making the Pi runtime packages resolvable to Bun.
 
 ## Privacy and limits
 
-This is **not** a byte-for-byte backup of the agent directory. Deliberately excluded: `auth.json` and any OAuth/API tokens, sessions/transcripts, user/global/project memory contents, caches, machine IDs, downloaded Pi runtime/binaries, generated `node_modules`, and third-party package/skill source. A user MCP configuration exists but is intentionally excluded; there are no prompt templates or themes in this snapshot. The repository's [`.gitignore`](.gitignore) blocks common private/runtime paths, but review every future commit before making it public. Third-party components remain governed by their upstream licenses.
+This is **not** a byte-for-byte backup of the agent directory. Deliberately excluded: `auth.json` and any OAuth/API tokens, sessions/transcripts, user/global/project memory contents, caches, machine IDs, downloaded Pi runtime/binaries, generated `node_modules`, and other third-party package/skill source. The included Herdr package is the explicitly vendored exception. A user MCP configuration exists but is intentionally excluded; there are no prompt templates or themes in this snapshot. The repository's [`.gitignore`](.gitignore) blocks common private/runtime paths, but review every future commit before making it public. Third-party components remain governed by their upstream licenses.
